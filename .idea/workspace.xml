@@ -27,8 +27,21 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
+<<<<<<< HEAD
                     <option name="branchName" value="main" />
                     <option name="lastUsedInstant" value="1651995490" />
+=======
+                    <option name="branchName" value="git-rebase" />
+                    <option name="lastUsedInstant" value="1651999548" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1651999112" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="git-merge" />
+                    <option name="lastUsedInstant" value="1651998244" />
+>>>>>>> 433acd0 (git-rebase 2)
                   </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="master" />
@@ -81,7 +94,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
