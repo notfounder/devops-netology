@@ -110,7 +110,7 @@
                   Return a status of 0 or 1 depending on the evaluation of the conditional  expression  expression.   Ex‐pressions  are composed of the primaries described below under CONDITIONAL EXPRESSIONS.  Word splitting and pathname expansion are not performed on the words between the [[ and ]]; tilde expansion, parameter and variable expansion, arithmetic expansion, command substitution, process substitution, and quote re‐moval are performed.  Conditional operators such as -f must be unquoted to be recognized as primaries.
     ```
 
-    Ответ: конструкция [[ -d /tmp ]] проверяет наличие каталога tmp
+    Ответ: конструкция [[ -d /tmp ]] проверяет наличие каталога tmp, вернёт 0 при наличии каталога /tmp и 1 если его нет.
 
 12. Основываясь на знаниях о просмотре текущих (например, PATH) и установке новых переменных; командах, которые мы рассматривали, добейтесь в выводе type -a bash в виртуальной машине наличия первым пунктом в списке:
 
