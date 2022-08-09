@@ -111,6 +111,42 @@
 
 5. Как настроен sysctl `fs.nr_open` на системе по-умолчанию? Узнайте, что означает этот параметр. Какой другой существующий лимит не позволит достичь такого числа (`ulimit --help`)?
 
-     Ответ: 
+     Ответ: Переменная `fs.nr_open` обозначает максимальное количество файловых дескрипторов, которые может выделить процесс. Значение по умолчанию - 1024*1024 (1048576) определено в коде ядра, чего должно быть достаточно для большинства машин. Значение «Максимальное количество открытых файлов» ( `ulimit -n`) ограничено `fs.nr_open` значением.
 
-6. ррр
+     Из справки:
+
+     -n        the maximum number of open file descriptors
+
+     ```
+     vagrant@vagrant:~$ /sbin/sysctl -n fs.nr_open
+     1048576
+     vagrant@vagrant:~$ ulimit -n
+     1024
+     vagrant@vagrant:~$
+     ```
+
+     ```
+     vagrant@vagrant:~$ ulimit -n
+     1024
+     vagrant@vagrant:~$
+     ```
+
+6. Запустите любой долгоживущий процесс (не `ls`, который отработает мгновенно, а, например, `sleep 1h`) в отдельном неймспейсе процессов; покажите, что ваш процесс работает под PID 1 через `nsenter`. Для простоты работайте в данном задании под root (`sudo -i`). Под обычным пользователем требуются дополнительные опции (`--map-root-user`) и т.д.
+
+     Ответ:
+
+     ![03-sysadmin-01-terminal_28.png](https://github.com/notfounder/devops-netology/blob/main/img/03-sysadmin-01-terminal_28.png?raw=true)
+
+     ![03-sysadmin-01-terminal_29.png](https://github.com/notfounder/devops-netology/blob/main/img/03-sysadmin-01-terminal_29.png?raw=true)
+
+7. Найдите информацию о том, что такое `:(){ :|:& };:`. Запустите эту команду в своей виртуальной машине Vagrant с Ubuntu 20.04 (**это важно, поведение в других ОС не проверялось**). Некоторое время все будет "плохо", после чего (минуты) – ОС должна стабилизироваться. Вызов `dmesg` расскажет, какой механизм помог автоматической стабилизации. Как настроен этот механизм по-умолчанию, и как изменить число процессов, которое можно создать в сессии?
+
+     Ответ:
+
+     ![03-sysadmin-01-terminal_30.png](https://github.com/notfounder/devops-netology/blob/main/img/03-sysadmin-01-terminal_30.png?raw=true)
+
+     ![03-sysadmin-01-terminal_31.png](https://github.com/notfounder/devops-netology/blob/main/img/03-sysadmin-01-terminal_31.png?raw=true)
+
+     Это fork bomb, за счет системного вызова `fork()`
+
+     Используя команду `ulimit -u 30` можно ограничить количество запущенных процессов для пользователя.
