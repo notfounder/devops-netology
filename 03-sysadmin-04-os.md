@@ -94,6 +94,23 @@
    node_network_transmit_errs_total{device="eth0"} 0
    ```
 
-   
+3. Результат установки и первичной настройки Netdata:
 
-3. 
+     ![03-sysadmin-01-terminal_27.png](https://github.com/notfounder/devops-netology/blob/main/img/03-sysadmin-01-terminal_27.png?raw=true)
+
+4. Можно ли по выводу `dmesg` понять, осознает ли ОС, что загружена не на настоящем оборудовании, а на системе виртуализации?
+
+     Ответ: Да
+
+     ```
+     vagrant@vagrant:~$ dmesg |grep virt
+     [    0.005607] CPU MTRRs all blank - virtualized system.
+     [    0.040774] Booting paravirtualized kernel on KVM
+     [   12.133478] systemd[1]: Detected virtualization oracle.
+     ```
+
+5. Как настроен sysctl `fs.nr_open` на системе по-умолчанию? Узнайте, что означает этот параметр. Какой другой существующий лимит не позволит достичь такого числа (`ulimit --help`)?
+
+     Ответ: 
+
+6. ррр
