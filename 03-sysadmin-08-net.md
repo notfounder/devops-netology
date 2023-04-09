@@ -206,8 +206,123 @@
          rx pathid: 0, tx pathid: 0
    ```
 
-   
+2. Создайте dummy-интерфейс в Ubuntu. Добавьте несколько статических маршрутов. Проверьте таблицу маршрутизации.
 
-1. 
+   Загружаем модуль `dummy`, опцию `numdummies=2` позволяет сразу создать  два dymmy интерфейса: `dummy0` и `dummy1`
+
+   ```sh
+   vagrant@vagrant:~$ sudo modprobe -v dummy numdummies=2
+   insmod /lib/modules/5.4.0-137-generic/kernel/drivers/net/dummy.ko numdummies=0 numdummies=2
+   vagrant@vagrant:~$ lsmod | grep dummy
+   dummy                  16384  0
+   vagrant@vagrant:~$ ip a
+   1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+       link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+       inet 127.0.0.1/8 scope host lo
+          valid_lft forever preferred_lft forever
+       inet6 ::1/128 scope host
+          valid_lft forever preferred_lft forever
+   2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+       link/ether 00:1c:42:b0:31:f8 brd ff:ff:ff:ff:ff:ff
+       inet 10.211.55.3/24 brd 10.211.55.255 scope global dynamic eth0
+          valid_lft 1340sec preferred_lft 1340sec
+       inet6 fdb2:2c26:f4e4:0:21c:42ff:feb0:31f8/64 scope global dynamic mngtmpaddr noprefixroute
+          valid_lft 2591636sec preferred_lft 604436sec
+       inet6 fe80::21c:42ff:feb0:31f8/64 scope link
+          valid_lft forever preferred_lft forever
+   3: dummy0: <BROADCAST,NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+       link/ether 3a:fa:3c:a0:e6:a6 brd ff:ff:ff:ff:ff:ff
+   4: dummy1: <BROADCAST,NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+       link/ether 96:e5:1d:d0:ee:0f brd ff:ff:ff:ff:ff:ff
+   ```
+
+   Добавляем IP адреса и переводим в UP dummy интерфейсы:
+
+   ```sh
+   vagrant@vagrant:~$ sudo ip addr add 192.168.1.150/24 dev dummy0
+   vagrant@vagrant:~$ sudo ip addr add 192.168.100.150/24 dev dummy1
+   vagrant@vagrant:~$ sudo ip link set dummy0 up
+   vagrant@vagrant:~$ sudo ip link set dummy1 up
+   vagrant@vagrant:~$ ip a
+   1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+       link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+       inet 127.0.0.1/8 scope host lo
+          valid_lft forever preferred_lft forever
+       inet6 ::1/128 scope host
+          valid_lft forever preferred_lft forever
+   2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+       link/ether 00:1c:42:49:22:1d brd ff:ff:ff:ff:ff:ff
+       inet 10.211.55.3/24 brd 10.211.55.255 scope global dynamic eth0
+          valid_lft 1173sec preferred_lft 1173sec
+       inet6 fdb2:2c26:f4e4:0:21c:42ff:fe49:221d/64 scope global dynamic mngtmpaddr noprefixroute
+          valid_lft 2591968sec preferred_lft 604768sec
+       inet6 fe80::21c:42ff:fe49:221d/64 scope link
+          valid_lft forever preferred_lft forever
+   3: dummy0: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+       link/ether f6:78:36:fd:3a:ec brd ff:ff:ff:ff:ff:ff
+       inet 192.168.1.150/24 scope global dummy0
+          valid_lft forever preferred_lft forever
+       inet6 fe80::f478:36ff:fefd:3aec/64 scope link
+          valid_lft forever preferred_lft forever
+   4: dummy1: <BROADCAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc noqueue state UNKNOWN group default qlen 1000
+       link/ether e6:3c:e0:44:b8:cd brd ff:ff:ff:ff:ff:ff
+       inet 192.168.100.150/24 scope global dummy1
+          valid_lft forever preferred_lft forever
+       inet6 fe80::e43c:e0ff:fe44:b8cd/64 scope link
+          valid_lft forever preferred_lft forever
+   ```
+
+   Текущие маршруты:
+
+   ```sh
+   vagrant@vagrant:~$ ip route
+   default via 10.211.55.1 dev eth0 proto dhcp src 10.211.55.3 metric 100
+   10.211.55.0/24 dev eth0 proto kernel scope link src 10.211.55.3
+   10.211.55.1 dev eth0 proto dhcp scope link src 10.211.55.3 metric 100
+   192.168.1.0/24 dev dummy0 proto kernel scope link src 192.168.1.150
+   192.168.100.0/24 dev dummy1 proto kernel scope link src 192.168.100.150
+   ```
+
+   Добавляем несколько статических маршрутов:
+
+   ```sh
+   vagrant@vagrant:~$ sudo ip route add 8.8.8.8 via 192.168.1.150
+   vagrant@vagrant:~$ sudo ip route add 10.10.1.0/24 dev dummy0
+   vagrant@vagrant:~$ ip route
+   default via 10.211.55.1 dev eth0 proto dhcp src 10.211.55.3 metric 100
+   8.8.8.8 via 192.168.1.150 dev dummy0
+   10.10.1.0/24 dev dummy0 scope link
+   10.211.55.0/24 dev eth0 proto kernel scope link src 10.211.55.3
+   10.211.55.1 dev eth0 proto dhcp scope link src 10.211.55.3 metric 100
+   192.168.1.0/24 dev dummy0 proto kernel scope link src 192.168.1.150
+   192.168.100.0/24 dev dummy1 proto kernel scope link src 192.168.100.150 
+   ```
+
+   ![03-sysadmin-08-net_01.jpg](https://github.com/notfounder/devops-netology/blob/main/img/03-sysadmin-08-net_01.jpg?raw=true)
+
+3. Проверьте открытые TCP-порты в Ubuntu. Какие протоколы и приложения используют эти порты? Приведите несколько примеров.
+
+   ```
+   vagrant@vagrant:~$ sudo ss -tlpn
+   State      Recv-Q     Send-Q         Local Address:Port         Peer Address:Port     Process
+   LISTEN     0          4096           127.0.0.53%lo:53                0.0.0.0:*         users:(("systemd-resolve",pid=690,fd=13))
+   LISTEN     0          128                  0.0.0.0:22                0.0.0.0:*         users:(("sshd",pid=1601,fd=3))
+   LISTEN     0          128                     [::]:22                   [::]:*         users:(("sshd",pid=1601,fd=4))
+   ```
+
+4. Проверьте используемые UDP-сокеты в Ubuntu. Какие протоколы и приложения используют эти порты?
+
+   ```
+   vagrant@vagrant:~$ sudo ss -lupn
+   State     Recv-Q     Send-Q            Local Address:Port         Peer Address:Port    Process
+   UNCONN    0          0                 127.0.0.53%lo:53                0.0.0.0:*        users:(("systemd-resolve",pid=690,fd=12))
+   UNCONN    0          0              10.211.55.3%eth0:68                0.0.0.0:*        users:(("systemd-network",pid=688,fd=15))
+   ```
+
+   53 - DNS, 22 - SSH порт
+
+5. Используя diagrams.net, создайте L3-диаграмму вашей домашней сети или любой другой сети, с которой вы работали.
+
+   ![03-sysadmin-08-net_02.jpg](https://github.com/notfounder/devops-netology/blob/main/img/03-sysadmin-08-net_02.jpg?raw=true)
 
    
