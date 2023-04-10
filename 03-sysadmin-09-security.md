@@ -184,6 +184,77 @@
    notfounder@srv-grogu-web:~$ 
    ```
 
-1. 
+1. Переименуйте файлы ключей из задания 5. Настройте файл конфигурации SSH-клиента так, чтобы вход на удалённый сервер осуществлялся по имени сервера.
+
+   Переименуем ключи id_rsa и id_rsa.pub в id_rsa_test и id_rsa_test.pub соответственно
+
+   ```
+   notfounder@srv-grogu13:~/.ssh$ ls -la
+   total 24
+   drwx------ 2 notfounder notfounder 4096 апр 10 18:11 .
+   drwxr-x--- 6 notfounder notfounder 4096 апр  9 19:11 ..
+   -rw------- 1 notfounder notfounder    0 апр  7 21:17 authorized_keys
+   -rw------- 1 notfounder notfounder 2610 апр 10 17:49 id_rsa_test
+   -rw-r--r-- 1 notfounder notfounder  576 апр 10 17:49 id_rsa_test.pub
+   -rw------- 1 notfounder notfounder  978 апр 10 17:49 known_hosts
+   -rw-r--r-- 1 notfounder notfounder  142 апр 10 17:49 known_hosts.old
+   ```
+
+    Подключение по сертификату не работает, запрашивает теперь пароль:
+
+   ```
+   notfounder@srv-grogu13:~/.ssh$ ssh notfounder@192.168.88.28
+   notfounder@192.168.88.28's password:
+   ```
+
+   Создаем файл конфигурации SSH для решения наших задач:
+
+   <img src="https://github.com/notfounder/devops-netology/blob/main/img/03-sysadmin-09-security_10.jpg?raw=true" alt="03-sysadmin-09-security_10.jpg" style="zoom:50%;" />
+
+   Проверяем:
+
+   ```
+   notfounder@srv-grogu13:~/.ssh$ ssh srv-grogu-web
+   Welcome to Ubuntu 22.04.2 LTS (GNU/Linux 5.15.0-69-generic aarch64)
+   
+    * Documentation:  https://help.ubuntu.com
+    * Management:     https://landscape.canonical.com
+    * Support:        https://ubuntu.com/advantage
+   
+     System information as of Mon Apr 10 06:42:03 PM UTC 2023
+   
+     System load:  0.009765625        Processes:               116
+     Usage of /:   16.5% of 29.82GB   Users logged in:         1
+     Memory usage: 13%                IPv4 address for enp0s5: 192.168.88.28
+     Swap usage:   0%
+   
+    * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s
+      just raised the bar for easy, resilient and secure K8s cluster deployment.
+   
+      https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+   
+    * Introducing Expanded Security Maintenance for Applications.
+      Receive updates to over 25,000 software packages with your
+      Ubuntu Pro subscription. Free for personal use.
+   
+        https://ubuntu.com/pro
+   
+   Expanded Security Maintenance for Applications is not enabled.
+   
+   28 updates can be applied immediately.
+   To see these additional updates run: apt list --upgradable
+   
+   Enable ESM Apps to receive additional future security updates.
+   See https://ubuntu.com/esm or run: sudo pro status
+   
+   
+   Last login: Mon Apr 10 18:07:52 2023 from 192.168.88.15
+   ```
+
+   Все работает.
+
+1. Соберите дамп трафика утилитой tcpdump в формате pcap, 100 пакетов. Откройте файл pcap в Wireshark.
+
+   
 
    
