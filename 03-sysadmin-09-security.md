@@ -137,7 +137,7 @@
    +----[SHA256]-----+ 
    ```
 
-   Закидываем открытый ключ на сервер к которому планируем подключаться в файл `~/.ssh/authorized_keys`, пережать можно любым способом, с помощью команды `ssh-copy-id` через протокол SFTP или так: 
+   Закидываем открытый ключ на сервер к которому планируем подключиться с помощью команды  [ssh-copy-id](https://www.ssh.com/academy/ssh/copy-id) или переносим в файл `~/.ssh/authorized_keys`, с помощью файлового менеджер по протоколу SFTP или таким образом:
 
    ```
    cat ~/.ssh/id_rsa.pub | ssh <USER>@<HOST OR IP> "mkdir -p ~/.ssh && touch ~/.ssh/authorized_keys && chmod -R go= ~/.ssh && cat >> ~/.ssh/authorized_keys"
@@ -255,6 +255,12 @@
 
 1. Соберите дамп трафика утилитой tcpdump в формате pcap, 100 пакетов. Откройте файл pcap в Wireshark.
 
+   ```
+   notfounder@mb-grogu13 ~ % sudo tcpdump -i en0 -vvv -c 100 -w test.pcap
+   tcpdump: listening on en0, link-type EN10MB (Ethernet), snapshot length 524288 bytes
+   100 packets captured
+   133 packets received by filter
+   0 packets dropped by kernel
+   ```
    
-
-   
+   <img src="https://github.com/notfounder/devops-netology/blob/main/img/03-sysadmin-09-security_11.jpg?raw=true" alt="03-sysadmin-09-security_11.jpg" style="zoom:50%;" />
