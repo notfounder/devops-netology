@@ -42,7 +42,7 @@
    	curl https://localhost:4757
    	if (($? != 0))
    	then
-   		date >> curl.log
+   		date > curl.log # ">" так как заканчивается место на диске
    	else #если сервис доступен
    	    break #прерываем текущий цикл
    	fi
