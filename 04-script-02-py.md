@@ -45,13 +45,30 @@ for result in result_os.split('\n'):
 ### Ваш скрипт:
 
 ```python
-???
+#!/usr/bin/env python3
+
+import os
+
+path = "/Users/notfounder/devops-netology"
+bash_command = ["cd " + path, "git status"]
+result_os = os.popen(' && '.join(bash_command)).read()
+#is_change = False
+for result in result_os.split('\n'):
+    if result.find('modified') != -1:
+        prepare_result = result.replace('\tmodified:   ', '')
+        print(path + "/" + prepare_result)
+        #break - не прерываем цикл
 ```
 
 ### Вывод скрипта при запуске во время тестирования:
 
 ```
-???
+notfounder@mb-grogu13 ~ %  cd /Users/notfounder ; /usr/bin/env /opt/homebrew/bin/python3 /Users/notfounder/.vsco
+de/extensions/ms-python.python-2023.6.1/pythonFiles/lib/python/debugpy/adapter/../../debugpy/launcher 59091 -- /
+Users/notfounder/t2.py 
+/Users/notfounder/devops-netology/04-script-01-bash.md
+/Users/notfounder/devops-netology/04-script-02-py.md
+notfounder@mb-grogu13 ~ % 
 ```
 
 ------
@@ -63,13 +80,33 @@ for result in result_os.split('\n'):
 ### Ваш скрипт:
 
 ```python
-???
+#!/usr/bin/env python3
+
+import os
+import sys
+
+if len(sys.argv) > 1:
+    path = sys.argv[1]
+else:
+    path = "/Users/notfounder/devops-netology"
+
+bash_command = ["cd " + path, "git status"]
+result_os = os.popen(' && '.join(bash_command)).read()
+#is_change = False
+for result in result_os.split('\n'):
+    if result.find('modified') != -1:
+        prepare_result = result.replace('\tmodified:   ', '')
+        print(path + "/" + prepare_result)
+        #break - не прерываем цикл
 ```
 
 ### Вывод скрипта при запуске во время тестирования:
 
-```
-???
+```sh
+notfounder@mb-grogu13 ~ % ./t2.py
+/Users/notfounder/devops-netology/04-script-02-py.md
+notfounder@mb-grogu13 ~ % ./t2.py /Users/notfounder/testing
+/Users/notfounder/testing/test
 ```
 
 ------
